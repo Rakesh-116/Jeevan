@@ -1,0 +1,107 @@
+function goToHome(){
+    window.location.assign("home.html");
+}
+
+function takeAQuiz(){
+    window.location.assign("quiz.html");
+}
+
+const questions = [
+    {
+        question: "How often do you feel persistently sad or low for no apparent reason?",
+        answers: [
+            {text: "A. Rarely or never", points:0},
+            {text: "B. Sometimes ", points:1},
+            {text: "C. Frequently", points:2},
+        ]
+    },
+    {
+        question: "How is your sleep quality lately?",
+        answers: [
+            {text: "A. Good, I sleep well ", points:0},
+            {text: "B. Occasionally disturbed ", points:1},
+            {text: "C. Consistently poor ", points:2},
+        ]
+    },
+    {
+        question: "Do you often feel anxious, nervous, or worried without a clear reason?",
+        answers: [
+            {text: "A. Rarely or never", points:0},
+            {text: "B. Sometimes ", points:1},
+            {text: "C. Frequently", points:2},
+        ]
+    },
+    {
+        question: " Have you experienced changes in your appetite or weight recently?",
+        answers: [
+            {text: "A. No changes ", points:0},
+            {text: "B. Some fluctuations", points:1},
+            {text: "C. Significant changes", points:2},
+        ]
+    }
+]
+
+const questionElement = document.getElementById("question");
+const ansBtn = document.getElementById("answer-buttons");
+const nextBtn = document.getElementById("next-btn");
+
+let currentQuestionIndex = 0;
+let score = 0;
+
+function startQuiz(){
+    currentQuestionIndex = 0;
+    score = 0;
+    nextBtn.innerHTML = "Next";
+    showQuestion();
+}
+
+function showQuestion(){
+    resetState();
+    let currentQuestion = questions[currentQuestionIndex];
+    let queNo = currentQuestionIndex + 1;
+    questionElement.innerHTML = queNo + ". " + currentQuestion.question;
+
+    currentQuestion.answers.forEach(answer =>{
+        const button = document.createElement("button");
+        button.innerHTML = answer.text;
+        button.classList.add("quiz-btn");
+        ansBtn.appendChild(button);
+        button.addEventListener("click", selectAnswer);
+    });
+}
+
+function resetState(){
+    nextBtn.style.display = "none";
+    while(ansBtn.firstChild){
+        ansBtn.removeChild(ansBtn.firstChild)
+    }
+}
+
+function selectAnswer(answer){
+    score += answer.points;
+    nextBtn.style.display = "block";
+}
+
+function showScore(){
+    resetState();
+    questionElement.innerHTML = "You score is:  " + score;
+}
+
+function handleNextButton(){
+    currentQuestionIndex++;
+    if(currentQuestionIndex < questions.length){
+        showQuestion();
+    }else{
+        showScore();
+    }
+}
+
+nextBtn.addEventListener("click",()=>{
+    if(currentQuestionIndex < questions.length){
+        handleNextButton();
+    }else{
+        startQuiz();
+    }
+})
+
+startQuiz();
